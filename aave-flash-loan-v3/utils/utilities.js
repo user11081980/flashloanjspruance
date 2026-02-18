@@ -1,22 +1,20 @@
 const { network, ethers } = require("hardhat");
+const IERC20 = require("@openzeppelin/contracts/build/contracts/IERC20.json");
+const constants = require("../constants/constants");
 
-const fundErc20 = async (contract, sender, recepient, amount) => {
-    const amount_to_fund = ethers.utils.parseUnits(amount, 18);
-    const whale = await ethers.getSigner(sender);
-
-    const contractSigner = contract.connect(whale);
-    await contractSigner.transfer(recepient, amount_to_fund);
-};
-
-const impersonateFundErc20 = async (contract, sender, recepient, amount) => {
+const impersonateFundErc20 = async (senderAddress, recipientAddress, tokenAddress, amountToFund) => {
     await network.provider.request({
         method: "hardhat_impersonateAccount",
-        params: [sender],
+        params: [senderAddress],
     });
-    await fundErc20(contract, sender, recepient, amount);
+
+    const tokenContract = new ethers.Contract(tokenAddress, IERC20.abi, waffle.provider); // Waffle is a smart contract testing library that uses JavaScript, is a part of Hardhat, and acts as a connection to the Ethereum network, where the statement waffle.provider creates a local in-memory Ethereum node
+    const senderSigner = await ethers.getSigner(senderAddress);
+    await tokenContract.connect(senderSigner).transfer(recipientAddress, ethers.utils.parseUnits(amountToFund, constants.AMOUNTS.NUMBER_OF_DECIMALS));
+
     await network.provider.request({
         method: "hardhat_stopImpersonatingAccount",
-        params: [sender],
+        params: [senderAddress],
     });
 };
 
