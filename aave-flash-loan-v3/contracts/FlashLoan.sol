@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.10;
 
-import {FlashLoanSimpleReceiverBase} from "@aave/core-v3/contracts/flashloan/base/FlashLoanSimpleReceiverBase.sol";
+import "hardhat/console.sol";
+import {FlashLoanSimpleReceiverBase} from "@aave/core-v3/contracts/flashloan/base/FlashLoanSimpleReceiverBase.sol"; // Required base contract for receiving flash loans.
 import {IPoolAddressesProvider} from "@aave/core-v3/contracts/interfaces/IPoolAddressesProvider.sol";
 import {IERC20} from "@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20.sol";
 
@@ -15,9 +16,7 @@ contract FlashLoan is FlashLoanSimpleReceiverBase {
         owner = payable(msg.sender);
     }
 
-    /**
-        This function is called after your contract has received the flash loaned amount
-     */
+    // This function is called after your contract has received the flash loaned amount.
     function executeOperation(
         address asset,
         uint256 amount,
@@ -25,17 +24,9 @@ contract FlashLoan is FlashLoanSimpleReceiverBase {
         address initiator,
         bytes calldata params
     ) external override returns (bool) {
-        //
-        // This contract now has the funds requested.
-        // Your logic goes here.
-        //
+        // ARBITRAGE LOGIC HERE
 
-        // At the end of your logic above, this contract owes
-        // the flashloaned amount + premiums.
-        // Therefore ensure your contract has enough to repay
-        // these amounts.
-
-        // Approve the Pool contract allowance to *pull* the owed amount
+        // Repay the loan by allowing the pool to pull the owed amount.
         uint256 amountOwed = amount + premium;
         IERC20(asset).approve(address(POOL), amountOwed);
 
@@ -47,7 +38,7 @@ contract FlashLoan is FlashLoanSimpleReceiverBase {
         address asset = _token;
         uint256 amount = _amount;
         bytes memory params = "";
-        uint16 referralCode = 0;
+        uint16 referralCode = 0; // 0 if IPool.flashLoanSimple is executed directly by the user.
 
         POOL.flashLoanSimple(
             receiverAddress,

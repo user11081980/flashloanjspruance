@@ -3,9 +3,7 @@ const hre = require("hardhat");
 async function main() {
   console.log("deploying...");
   const FlashLoan = await hre.ethers.getContractFactory("FlashLoan");
-  const flashLoan = await FlashLoan.deploy(
-    "0xc4dCB5126a3AfEd129BC3668Ea19285A9f56D15D"
-  );
+  const flashLoan = await FlashLoan.deploy("0xc4dCB5126a3AfEd129BC3668Ea19285A9f56D15D"); // Argument is passed to the constructor of the smart contract
 
   await flashLoan.deployed();
 
