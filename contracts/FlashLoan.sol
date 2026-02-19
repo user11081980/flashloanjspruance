@@ -1,6 +1,6 @@
 // contracts/FlashLoan.sol
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.10;
+pragma solidity 0.8.20;
 
 import "hardhat/console.sol";
 import {FlashLoanSimpleReceiverBase} from "@aave/core-v3/contracts/flashloan/base/FlashLoanSimpleReceiverBase.sol"; // Required base contract for receiving flash loans.
