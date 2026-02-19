@@ -8,7 +8,7 @@ const impersonateFundErc20 = async (senderAddress, recipientAddress, tokenAddres
         params: [senderAddress],
     });
 
-    const tokenContract = new ethers.Contract(tokenAddress, IERC20.abi, waffle.provider); // Waffle is a smart contract testing library that uses JavaScript, is a part of Hardhat, and acts as a connection to the Ethereum network, where the statement waffle.provider creates a local in-memory Ethereum node
+    const tokenContract = new ethers.Contract(tokenAddress, IERC20.abi, ethers.provider);
     const senderSigner = await ethers.getSigner(senderAddress);
     await tokenContract.connect(senderSigner).transfer(recipientAddress, ethers.utils.parseUnits(amountToFund, constants.AMOUNTS.NUMBER_OF_DECIMALS));
 

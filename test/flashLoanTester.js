@@ -23,8 +23,6 @@ describe("Aave Flash Loan contract on Hardhat BNB Chain mainnet local forked net
         );
         expect(await flashLoanContract.getBalance(constants.ADDRESSES.WBNB)).to.be.above(0);
 
-        return;
-
         await flashLoanContract.requestFlashLoan(
             constants.ADDRESSES.WBNB,
             ethers.utils.parseUnits(constants.AMOUNTS.AMOUNT_TO_BORROW, constants.AMOUNTS.NUMBER_OF_DECIMALS));
