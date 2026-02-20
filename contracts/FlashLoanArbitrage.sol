@@ -26,26 +26,30 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
         bytes calldata params
     ) external override returns (bool) {
         // Decodes the parameters.
-        (bytes memory data1, bytes memory data2, address tokenIntermediateAddress) = abi.decode(params, (bytes, bytes, address));
+        (bytes memory data1, bytes memory data2, address bridge) = abi.decode(params, (bytes, bytes, address));
+        // Store token references to reduce stack depth
+        IERC20 assetToken = IERC20(asset);
+        IERC20 bridgeToken = IERC20(bridge);
 
         // Execute the first swap to end up with the intermediate token.
-        IERC20(asset).approve(ONE_INCH_ROUTER_ADDRESS, amount);
-        (bool success1, bytes memory response1) = ONE_INCH_ROUTER_ADDRESS.call(data1); // 1inch gets the funds from this contract, swaps the amounts, and puts the funds back in this contract (provided that the receiver parameter of the swap API request was left blank).
-        if (!success1) {
-            revert(string.concat("Swap 1 failed.", getRevertReason(response1)));
+        assetToken.approve(ONE_INCH_ROUTER_ADDRESS, amount);
+        (bool success, bytes memory response) = ONE_INCH_ROUTER_ADDRESS.call(data1); // 1inch gets the funds from this contract, swaps the amounts, and puts the funds back in this contract (provided that the receiver parameter of the swap API request was left blank).
+        if (!success) {
+            revert(string.concat("Swap 1 failed.", getRevertReason(response)));
         }
 
         // Execute the second swap to end up with the borrowed token.
-        IERC20(tokenIntermediateAddress).approve(ONE_INCH_ROUTER_ADDRESS, IERC20(tokenIntermediateAddress).balanceOf(address(this)));
-        (bool success2, bytes memory response2) = ONE_INCH_ROUTER_ADDRESS.call(data2);
-        if (!success2) {
-            revert(string.concat("Swap 2 failed.", getRevertReason(response2)));
+        bridgeToken.approve(ONE_INCH_ROUTER_ADDRESS, bridgeToken.balanceOf(address(this)));
+        (success, response) = ONE_INCH_ROUTER_ADDRESS.call(data2);
+        if (!success) {
+            revert(string.concat("Swap 2 failed.", getRevertReason(response)));
         }
 
         // Repay the loan by allowing the pool to pull the owed amount.
+        uint256 balance = assetToken.balanceOf(address(this));
         uint256 amountOwed = amount + premium;
-        require(IERC20(asset).balanceOf(address(this)) >= amountOwed, "Amount owed exceeds balance.");
-        IERC20(asset).approve(address(POOL), amountOwed);
+        require(balance >= amountOwed, "Amount owed exceeds balance.");
+        assetToken.approve(address(POOL), amountOwed);
 
         return true;
     }

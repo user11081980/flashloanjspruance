@@ -62,5 +62,8 @@ describe("Aave Flash Loan contract on Hardhat BNB Chain mainnet local forked net
             constants.ADDRESSES.WBNB,
             ethers.utils.parseUnits(constants.AMOUNTS.AMOUNT_TO_BORROW, constants.AMOUNTS.NUMBER_OF_DECIMALS),
             ethers.utils.defaultAbiCoder.encode(["bytes", "bytes", "address"], [response1.tx.data, response2.tx.data, constants.ADDRESSES.LINK]));
+        
+        console.log("Borrowd:", ethers.utils.parseUnits(constants.AMOUNTS.AMOUNT_TO_BORROW, constants.AMOUNTS.NUMBER_OF_DECIMALS));
+        console.log("Balance:", await flashLoanContract.getBalance(constants.ADDRESSES.WBNB));
     });
 });

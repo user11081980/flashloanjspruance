@@ -9,6 +9,7 @@ module.exports = {
             forking: {
                 "url": "https://bnb-mainnet.g.alchemy.com/v2/4aw-gp2kgdQQvI3kb1UNN"
             },
+            chainId: 56
         }
     },
 };

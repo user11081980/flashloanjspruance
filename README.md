@@ -8,4 +8,5 @@
 * The word "pool" is ambiguous. In the world of Automated Market Makers like Uniswap, a pool is a pair. However, in Aave, the pool refers to a lending pool, which functions more like a massive, multi-asset warehouse. The address returned by `IPoolAddressesProvider.getPool()` is the main entry point of interacting with Aave, where `IPoolAddressesProvider` acts as a proxy where the entire purpose is to enable Aave update the underlying contract when needed.
 
 # TODO
-* Add logging to contract
+* Error 0xf4059071
+* Implement nonce
