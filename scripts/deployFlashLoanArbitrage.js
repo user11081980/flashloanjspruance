@@ -1,20 +1,20 @@
-const hre = require("hardhat");
+const constants = require("../constants/constants");
 
 async function main() {
-  console.log("deploying...");
-  const FlashLoanArbitrage = await hre.ethers.getContractFactory(
-    "FlashLoanArbitrage"
-  );
-  const flashLoanArbitrage = await FlashLoanArbitrage.deploy(
-    "0xc4dCB5126a3AfEd129BC3668Ea19285A9f56D15D"
-  );
+    const [deployer] = await ethers.getSigners(); // the RHS returns an array of signers where each represents an Ethereum account, whereas the LHS performs destructuring to assign just the first signer to a constant.
+    console.log("Deploying contract with the account: ", deployer.address);
+    console.log("Account balance: ", (await deployer.getBalance()).toString());
 
-  await flashLoanArbitrage.deployed();
+    const contractFactory = await ethers.getContractFactory("FlashLoanArbitrage");
+    const contract = await contractFactory.deploy(constants.ADDRESSES.POOL_ADDRESSES_PROVIDER); // Argument is passed to the constructor of the smart contract
+    await contract.deployed();
 
-  console.log("Flash loan contract deployed: ", flashLoanArbitrage.address);
+    console.log("Contract address: ", contract.address);
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+main()
+    .then(() => process.exit(0))
+    .catch((error) => {
+        console.error(error);
+        process.exit(1);
+    });
