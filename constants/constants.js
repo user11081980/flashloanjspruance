@@ -17,8 +17,15 @@ const KEYS = {
     ONE_INCH: "DqVxYieMBUKZmsAVioaTmdC6nAlUF4BO"
 };
 
+const URLS = {
+    NEW_PAIRS_6HOURS_100TRANSACTIONS_100000LIQUIDITY: "https://dexscreener.com/bsc/pancakeswap?rankBy=trendingScoreH6&order=desc&minLiq=100000&maxAge=6&min6HTxns=100",
+    NEW_PAIRS_24HOURS_100TRANSACTIONS_100000LIQUIDITY: "https://dexscreener.com/bsc/pancakeswap?rankBy=trendingScoreH6&order=desc&minLiq=100000&maxAge=24&min6HTxns=100",
+    TRENDING_PAIRS_6HOURS_1000000LIQUIDITY: "https://dexscreener.com/bsc?rankBy=trendingScoreH6&order=desc&minLiq=1000000&profile=0"
+};
+
 module.exports = {
     AMOUNTS,
     ADDRESSES,
-    KEYS
+    KEYS,
+    URLS
 };
