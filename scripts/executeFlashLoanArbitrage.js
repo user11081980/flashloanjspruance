@@ -40,6 +40,8 @@ async function executeFlashLoanArbitrage(symbol, address) {
         });
 
         const endingAmountBigNumber = BigNumber.from(response2.dstAmount);
+        console.log(startingAmountBigNumber.toString());
+        console.log(endingAmountBigNumber.toString());
         if (endingAmountBigNumber.gt(startingAmountBigNumber)) {
             console.log(`WBNB/${symbol}/WBNB ARBITRAGE FOUND!`);
             utilities.pushover(`WBNB/${symbol}/WBNB ARBITRAGE FOUND!`);
