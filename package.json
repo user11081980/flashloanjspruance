@@ -21,6 +21,7 @@
     "@aave/core-v3": "^1.16.2",
     "@openzeppelin/contracts": "^4.7.3",
     "dotenv": "^16.0.3",
-    "axios": "1.13.5"
+    "axios": "1.13.5",
+    "pushover-notifications": "1.2.3"
   }
 }
