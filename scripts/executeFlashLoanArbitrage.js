@@ -10,7 +10,7 @@ async function executeFlashLoanArbitrage(symbol, address) {
             dst: constants.ADDRESSES.LINK,
             amount: ethers.utils.parseUnits(constants.AMOUNTS.AMOUNT_TO_BORROW, constants.AMOUNTS.NUMBER_OF_DECIMALS).toString(),
             from: constants.ADDRESSES.FLASH_LOAN_ARBITRAGE,
-            slippage: 0.5,
+            slippage: 2,
             disableEstimate: "true"
         });
 
@@ -18,9 +18,9 @@ async function executeFlashLoanArbitrage(symbol, address) {
         const response2 = await utilities.oneInchSwap({
             src: constants.ADDRESSES.LINK,
             dst: constants.ADDRESSES.WBNB,
-            amount: amountBigNumber, // .mul(700).div(1000).toString() Consider creating a variable, where 700 stands for 70.0%
+            amount: amountBigNumber.toString(), // .mul(700).div(1000).toString() Consider creating a variable, where 700 stands for 70.0%
             from: constants.ADDRESSES.FLASH_LOAN_ARBITRAGE,
-            slippage: 0.5,
+            slippage: 2,
             disableEstimate: "true"
         });
 
@@ -33,7 +33,11 @@ async function executeFlashLoanArbitrage(symbol, address) {
             ethers.utils.parseUnits(constants.AMOUNTS.AMOUNT_TO_BORROW, constants.AMOUNTS.NUMBER_OF_DECIMALS),
             ethers.utils.defaultAbiCoder.encode(["bytes", "bytes", "address"], [response1.tx.data, response2.tx.data, constants.ADDRESSES.LINK]));
     } catch (e) {
-        console.log(`(${e.message}, ${e.response?.data?.description || e.response?.data}, ${e.code})`);
+        console.log({
+            reason: e.reason,
+            code: e.code,
+            method: e.method
+        });
     }
 }
 
