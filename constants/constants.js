@@ -1,6 +1,6 @@
 const AMOUNTS = {
     AMOUNT_TO_FUND: "100",
-    AMOUNT_TO_BORROW: "50",
+    AMOUNT_TO_BORROW: "1000",
     NUMBER_OF_DECIMALS: 18
 };
 
@@ -18,9 +18,10 @@ const KEYS = {
 };
 
 const URLS = {
-    NEW_PAIRS_6HOURS_100TRANSACTIONS_100000LIQUIDITY: "https://dexscreener.com/bsc/pancakeswap?rankBy=trendingScoreH6&order=desc&minLiq=100000&maxAge=6&min6HTxns=100",
-    NEW_PAIRS_24HOURS_100TRANSACTIONS_100000LIQUIDITY: "https://dexscreener.com/bsc/pancakeswap?rankBy=trendingScoreH6&order=desc&minLiq=100000&maxAge=24&min6HTxns=100",
-    TRENDING_PAIRS_6HOURS_1000000LIQUIDITY: "https://dexscreener.com/bsc?rankBy=trendingScoreH6&order=desc&minLiq=1000000&profile=0"
+    NEW_6HOURS_100TRANSACTIONS_100000LIQUIDITY: "https://dexscreener.com/bsc/pancakeswap?rankBy=trendingScoreH6&order=desc&minLiq=100000&maxAge=6&min6HTxns=100",
+    NEW_24HOURS_100TRANSACTIONS_100000LIQUIDITY: "https://dexscreener.com/bsc/pancakeswap?rankBy=trendingScoreH6&order=desc&minLiq=100000&maxAge=24&min6HTxns=100",
+    TRENDING_6HOURS_1000000LIQUIDITY: "https://dexscreener.com/bsc?rankBy=trendingScoreH6&order=desc&minLiq=1000000&profile=0",
+    GAINERS_5MINUTES_25000LIQUIDITY: "https://dexscreener.com/bsc?rankBy=priceChangeM5&order=desc&minLiq=25000&min24HTxns=50&min24HVol=10000"
 };
 
 module.exports = {

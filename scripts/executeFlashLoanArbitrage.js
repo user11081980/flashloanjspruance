@@ -51,7 +51,7 @@ async function executeFlashLoanArbitrage(symbol, address) {
 
 async function loop() {
     while (true) {
-        const bridges = (await dexScreenerScrapper.scrapeTrendingPairs(constants.URLS.TRENDING_PAIRS_6HOURS_1000000LIQUIDITY)).map(x => x.baseToken);
+        const bridges = (await dexScreenerScrapper.scrapeTrendingPairs(constants.URLS.GAINERS_5MINUTES_25000LIQUIDITY)).map(x => x.baseToken).slice(0, 5);
         for (const bridge of bridges) {
             await executeFlashLoanArbitrage(bridge.symbol, bridge.address);
             await new Promise(resolve => setTimeout(resolve, 4000)); // Consider using a variable.
