@@ -21,7 +21,9 @@ const URLS = {
     NEW_6HOURS_100TRANSACTIONS_100000LIQUIDITY: "https://dexscreener.com/bsc/pancakeswap?rankBy=trendingScoreH6&order=desc&minLiq=100000&maxAge=6&min6HTxns=100",
     NEW_24HOURS_100TRANSACTIONS_100000LIQUIDITY: "https://dexscreener.com/bsc/pancakeswap?rankBy=trendingScoreH6&order=desc&minLiq=100000&maxAge=24&min6HTxns=100",
     TRENDING_6HOURS_1000000LIQUIDITY: "https://dexscreener.com/bsc?rankBy=trendingScoreH6&order=desc&minLiq=1000000&profile=0",
-    GAINERS_5MINUTES_25000LIQUIDITY: "https://dexscreener.com/bsc?rankBy=priceChangeM5&order=desc&minLiq=25000&min24HTxns=50&min24HVol=10000"
+    GAINERS_5MINUTES_25000LIQUIDITY: "https://dexscreener.com/bsc?rankBy=priceChangeM5&order=desc&minLiq=25000&min24HTxns=50&min24HVol=10000",
+    POPULAR_1000000LIQUIDITY: "https://dexscreener.com/bsc?rankBy=trendingScoreH6&order=desc&minLiq=1000000&min24HVol=5000000",
+    HIGHVOLUME: "https://dexscreener.com/bsc?rankBy=trendingScoreH6&order=desc&minLiq=1000000&minAge=48&min24HVol=5000000" // 1 to 5 ratio volume/liquidity
 };
 
 module.exports = {
