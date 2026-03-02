@@ -14,7 +14,7 @@ module.exports = {
         mainnet: {
             url: "https://bsc-dataseed.binance.org/",
             chainId: 56,
-            accounts: ["0xb0e99a694392974e26710ed672899d779fd945e58f5e8b7a4ad7c64f3c12cd2c"], // the Trust Wallet private key, not to be confused with the Trust Wallet address
+            accounts: [ process.env.METAMASK_PRIVATE_KEY ], // the MetaMask private key, not to be confused with the MetaMask address
         }
     },
 };
