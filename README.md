@@ -4,6 +4,9 @@
 * `npx hardhat test --network hardhat`
 * `npx hardhat run scripts/deployFlashLoanArbitrage.js --network mainnet`
 * `npx hardhat run scripts/executeFlashLoanArbitrage.js --network mainnet`
+* `set HARDHAT_NETWORK=mainnet&& npx pm2 start scripts/executeFlashLoanArbitrage.js --name arbitrage`
+* `npx pm2 monit arbitrage`
+* `npx pm2 delete arbitrage`
 
 # Notes
 * The `PancakeSwapFlashSwap` and `OneInchFlashSwap` contracts had functions to initiate the flash loan. Likewise, `FlashLoanArbitrage` initiates the flash loan from `requestFlashLoan()` by calling `IPool.flashLoanSimple()`, where the parameters `asset` and `amount` indicate the token and amount to borrow. Any other additional information needed for 1Inch should be encoded in `params`.

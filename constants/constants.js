@@ -1,7 +1,8 @@
 const AMOUNTS = {
     AMOUNT_TO_FUND: "100",
-    AMOUNT_TO_BORROW: "1000",
-    NUMBER_OF_DECIMALS: 18
+    AMOUNT_TO_BORROW: "100000",
+    NUMBER_OF_DECIMALS: 18,
+    DELAY: 2000
 };
 
 const ADDRESSES = {
@@ -18,11 +19,14 @@ const KEYS = {
 };
 
 const URLS = {
-    NEW_6HOURS_100TRANSACTIONS_100000LIQUIDITY: "https://dexscreener.com/bsc/pancakeswap?rankBy=trendingScoreH6&order=desc&minLiq=100000&maxAge=6&min6HTxns=100",
-    NEW_24HOURS_100TRANSACTIONS_100000LIQUIDITY: "https://dexscreener.com/bsc/pancakeswap?rankBy=trendingScoreH6&order=desc&minLiq=100000&maxAge=24&min6HTxns=100",
-    TRENDING_6HOURS_1000000LIQUIDITY: "https://dexscreener.com/bsc?rankBy=trendingScoreH6&order=desc&minLiq=1000000&profile=0",
-    GAINERS_5MINUTES_25000LIQUIDITY: "https://dexscreener.com/bsc?rankBy=priceChangeM5&order=desc&minLiq=25000&min24HTxns=50&min24HVol=10000",
-    POPULAR_1000000LIQUIDITY: "https://dexscreener.com/bsc?rankBy=trendingScoreH6&order=desc&minLiq=1000000&min24HVol=5000000" // 1 to 5 ratio volume/liquidity
+    DEXSCREENER: [
+        NEW_6HOURS_100TRANSACTIONS_100000LIQUIDITY = "https://dexscreener.com/bsc/pancakeswap?rankBy=trendingScoreH6&order=desc&minLiq=100000&maxAge=6&min6HTxns=100",
+        NEW_24HOURS_100TRANSACTIONS_100000LIQUIDITY = "https://dexscreener.com/bsc/pancakeswap?rankBy=trendingScoreH6&order=desc&minLiq=100000&maxAge=24&min6HTxns=100",
+        TRENDING_6HOURS_1000000LIQUIDITY = "https://dexscreener.com/bsc?rankBy=trendingScoreH6&order=desc&minLiq=1000000&profile=0",
+        GAINERS_5MINUTES_25000LIQUIDITY = "https://dexscreener.com/bsc?rankBy=priceChangeM5&order=desc&minLiq=25000&min24HTxns=50&min24HVol=10000",
+        POPULAR_1000000LIQUIDITY = "https://dexscreener.com/bsc?rankBy=trendingScoreH6&order=desc&minLiq=1000000&min24HVol=5000000", // 1 to 5 ratio volume/liquidity
+        DEFAULT = "https://dexscreener.com/bsc"
+    ]
 };
 
 module.exports = {

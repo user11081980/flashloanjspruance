@@ -1,8 +1,13 @@
 const { ethers } = require("hardhat");
 const { BigNumber } = require("ethers");
+const hre = require("hardhat");
 const constants = require("../constants/constants");
 const utilities = require("../utils/utilities");
 const dexScreenerScrapper = require("../utils/dexScreenerScraper");
+
+console.log(`${hre.network.name} NETWORK`);
+
+const excludedSymbols = [];
 
 async function executeFlashLoanArbitrage(symbol, address) {
     try {
@@ -46,17 +51,48 @@ async function executeFlashLoanArbitrage(symbol, address) {
             code: e.code,
             method: e.method
         });
+        if (e.code === "ERR_BAD_REQUEST") {
+            excludedSymbols.push(symbol);
+        }
     }
 }
 
 async function loop() {
     while (true) {
-        const bridges = (await dexScreenerScrapper.scrapeTrendingPairs(constants.URLS.POPULAR_1000000LIQUIDITY)).map(x => x.baseToken).slice(0, 5);
+        const bridges = await getBridges();
+        console.log(`${bridges.length} URLS COLLECTED`);
         for (const bridge of bridges) {
-            await executeFlashLoanArbitrage(bridge.symbol, bridge.address);
-            await new Promise(resolve => setTimeout(resolve, 4000)); // Consider using a variable.
+            if (!excludedSymbols.includes(bridge.symbol)) {
+                await executeFlashLoanArbitrage(bridge.symbol, bridge.address);
+                await sleep(constants.AMOUNTS.DELAY);
+            }
         }
     }
 }
+
+async function getBridges() {
+    const bridges = [];
+    for (const url of constants.URLS.DEXSCREENER) {
+        try {
+            const temp = (await dexScreenerScrapper.scrapeTrendingPairs(url)).map(x => x.baseToken);
+            bridges.push(...temp);
+        } catch {
+            await sleep(constants.AMOUNTS.DELAY);
+        }
+    }
+    return bridges;
+};
+
+function sleep(delay) {
+    return new Promise(resolve => {
+        setTimeout(resolve, delay);
+    });
+}
+
+const log = console.log;
+console.log = (...args) => { // rest syntax in parameter collects multiple items into one array
+    const timestamp = new Date().toISOString();
+    log(`[${timestamp}]`, ...args); // spread syntax in call unpacks an array into individual items
+};
 
 loop();
