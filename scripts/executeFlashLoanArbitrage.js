@@ -59,6 +59,7 @@ async function executeFlashLoanArbitrage(symbol, address) {
 
 async function loop() {
     while (true) {
+        console.log("COLLECTING URLS...");
         const bridges = await getBridges();
         console.log(`${bridges.length} URLS COLLECTED`);
         for (const bridge of bridges) {
