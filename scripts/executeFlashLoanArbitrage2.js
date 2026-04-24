@@ -69,10 +69,18 @@ async function executeFlashLoanArbitrage(symbol, address, decimals) {
             });
         }
     } catch (e) {
-        // TODO: ADD TO EXCLUDED SYMBOLS BASED ON THE ERRORS THAT I SEE
-        // code: ERR_BAD_REQUEST
-        // data.error network. Supported chains: 1, 10, 56, 100, 130, 137, 146, 8453, 42161, 43114
-        console.log(e.code, e.response.data.error);
+        if (e.code === "ERR_BAD_REQUEST" && e.response.statusText === "Forbidden") {
+            console.log("RATE LIMIT REACHED. SLEEPING...");
+            await utilities.sleep(constants.AMOUNTS.DELAY_AFTER_RATE_LIMIT_REACHED);
+        } else if (e.code === "ERR_BAD_REQUEST" && e.response.data.error.includes("Rate limit reached")) {
+            console.log("RATE LIMIT REACHED. SLEEPING...");
+            await utilities.sleep(constants.AMOUNTS.DELAY_AFTER_RATE_LIMIT_REACHED);
+        }
+        else if (e.code === "ERR_BAD_REQUEST" && e.response.data.error.includes("No routes found with enough liquidity")) {
+            console.log("NO ROUTES FOUND WITH ENOUGH LIQUIDITY");
+            excludedSymbols.push(symbol);
+            await utilities.sleep(constants.AMOUNTS.DELAY_BETWEEN_CALLS);
+        }
     }
 }
 
@@ -84,7 +92,7 @@ async function loop() {
         for (const bridge of bridges) {
             if (!excludedSymbols.includes(bridge.symbol)) {
                 await executeFlashLoanArbitrage(bridge.symbol, bridge.address, bridge.decimals);
-                await sleep(constants.AMOUNTS.DELAY);
+                await utilities.sleep(constants.AMOUNTS.DELAY_BETWEEN_CALLS);
             }
         }
     }
@@ -97,22 +105,10 @@ async function getBridges() {
             const temp = (await dexScreenerScrapper.scrapeTrendingPairs(url)).map(x => x.baseToken);
             bridges.push(...temp);
         } catch {
-            await sleep(constants.AMOUNTS.DELAY);
+            await utilities.sleep(constants.AMOUNTS.DELAY_BETWEEN_CALLS);
         }
     }
     return bridges;
-};
-
-function sleep(delay) {
-    return new Promise(resolve => {
-        setTimeout(resolve, delay);
-    });
-}
-
-const log = console.log;
-console.log = (...args) => { // rest syntax in parameter collects multiple items into one array
-    const timestamp = new Date().toISOString();
-    log(`[${timestamp}]`, ...args); // spread syntax in call unpacks an array into individual items
 };
 
 loop();

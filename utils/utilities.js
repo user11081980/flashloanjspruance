@@ -41,8 +41,15 @@ const pushover = async (message) => {
     });
 };
 
+function sleep(delay) {
+    return new Promise(resolve => {
+        setTimeout(resolve, delay);
+    });
+};
+
 module.exports = {
     impersonateFundErc20: impersonateFundErc20,
     oneInchSwap: oneInchSwap,
-    pushover: pushover
+    pushover: pushover,
+    sleep: sleep
 };
