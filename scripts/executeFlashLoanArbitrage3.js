@@ -68,6 +68,12 @@ async function executeFlashLoanArbitrage(symbol, address, decimals) {
                 slippage: 50, // 0.5%
                 ignoreChecks: true
             });
+
+            const flashLoanContract = await ethers.getContractAt("FlashLoanArbitrage2", constants.ADDRESSES.ARBITRUM.FLASH_LOAN_ARBITRAGE);
+            await flashLoanContract.requestFlashLoan(
+                constants.ADDRESSES.ARBITRUM.WETH,
+                ethers.utils.parseUnits(constants.AMOUNTS.AMOUNT_TO_BORROW, constants.AMOUNTS.NUMBER_OF_DECIMALS),
+                ethers.utils.defaultAbiCoder.encode(["bytes", "bytes", "address"], [transaction1.data, transaction2.data, address]));
         }
     } catch (e) {
         // Retry later
@@ -86,11 +92,17 @@ async function executeFlashLoanArbitrage(symbol, address, decimals) {
         } else if (e.code === "ERR_BAD_REQUEST" && e.response.statusText === "Not Found") {
             console.log(`TOKEN NOT FOUND: ${address}`);
             excludedSymbols.push(symbol);
+        } else {
+            console.log(e);
         }
     }
 }
 
 async function loop() {
+    const contract = new ethers.Contract("0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8", constants.ABIS.IERC20_METADATA, provider);
+    const decimals = await contract.decimals();
+    await executeFlashLoanArbitrage("aArbWETH", "0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8", decimals);
+    return;
     while (true) {
         console.log("COLLECTING URLS...");
         const bridges = await getBridges();
@@ -100,7 +112,6 @@ async function loop() {
                 if (!bridge.decimals) {
                     const contract = new ethers.Contract(bridge.address, constants.ABIS.IERC20_METADATA, provider);
                     bridge.decimals = await contract.decimals();
-                    console.log(bridge.decimals);
                 }
                 await executeFlashLoanArbitrage(bridge.symbol, bridge.address, bridge.decimals);
                 await utilities.sleep(constants.AMOUNTS.DELAY_BETWEEN_CALLS);
