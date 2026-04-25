@@ -28,6 +28,11 @@ module.exports = {
             url: "https://bsc-dataseed.binance.org/",
             chainId: 56,
             accounts: [process.env.METAMASK_PRIVATE_KEY], // the MetaMask private key, not to be confused with the MetaMask address
+        },
+        arbitrum: {
+            url: "https://arb1.arbitrum.io/rpc",
+            chainId: 42161,
+            accounts: [process.env.METAMASK_PRIVATE_KEY], // the MetaMask private key, not to be confused with the MetaMask address
         }
     },
 };
