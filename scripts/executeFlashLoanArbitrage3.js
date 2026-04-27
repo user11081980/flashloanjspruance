@@ -47,7 +47,7 @@ async function executeFlashLoanArbitrage(symbol, address, decimals) {
 
         if (endingAmountBigNumber.gt(startingAmountBigNumber)) {
             console.log(`WETH/${symbol}/WETH ARBITRAGE FOUND!`);
-            utilities.pushover(`WETH/${symbol}/WETH ARBITRAGE FOUND!`);
+            //utilities.pushover(`WETH/${symbol}/WETH ARBITRAGE FOUND!`);
             const transaction1 = await sdk.swap.buildTx({
                 srcToken: constants.ADDRESSES.ARBITRUM.WETH,
                 destToken: address,
@@ -55,7 +55,7 @@ async function executeFlashLoanArbitrage(symbol, address, decimals) {
                 priceRoute: rate1,
                 userAddress: process.env.METAMASK_ARBITRUM_ADDRESS,
                 partner: "user11081980",
-                slippage: 50, // 0.5%
+                slippage: 500, // 5.00%
                 ignoreChecks: true
             });
             const transaction2 = await sdk.swap.buildTx({
@@ -65,15 +65,18 @@ async function executeFlashLoanArbitrage(symbol, address, decimals) {
                 priceRoute: rate2,
                 userAddress: process.env.METAMASK_ARBITRUM_ADDRESS,
                 partner: "user11081980",
-                slippage: 50, // 0.5%
+                slippage: 500, // 5.00%
                 ignoreChecks: true
             });
 
             const flashLoanContract = await ethers.getContractAt("FlashLoanArbitrage2", constants.ADDRESSES.ARBITRUM.FLASH_LOAN_ARBITRAGE);
-            await flashLoanContract.requestFlashLoan(
+            const tx = await flashLoanContract.requestFlashLoan(
                 constants.ADDRESSES.ARBITRUM.WETH,
                 ethers.utils.parseUnits(constants.AMOUNTS.AMOUNT_TO_BORROW, constants.AMOUNTS.NUMBER_OF_DECIMALS),
                 ethers.utils.defaultAbiCoder.encode(["bytes", "bytes", "address"], [transaction1.data, transaction2.data, address]));
+            const receipt = await tx.wait();
+
+            utilities.pushover(`WETH/${symbol}/WETH ARBITRAGE COMPLETED!`);
         }
     } catch (e) {
         // Retry later
@@ -84,6 +87,9 @@ async function executeFlashLoanArbitrage(symbol, address, decimals) {
         else if (e.code === "ERR_BAD_REQUEST" && e.response.data.error.includes("Rate limit reached")) {
             console.log("RATE LIMIT REACHED. SLEEPING...");
             await utilities.sleep(constants.AMOUNTS.DELAY_AFTER_RATE_LIMIT_REACHED);
+        }
+        else if (e.code === "UNPREDICTABLE_GAS_LIMIT" && e.reason.includes("execution reverted")) {
+            console.log(`EXECUTION REVERTED: ${e.reason}`)
         }
         // Exclude
         else if (e.code === "ERR_BAD_REQUEST" && e.response.data.error.includes("No routes found with enough liquidity")) {
@@ -99,10 +105,10 @@ async function executeFlashLoanArbitrage(symbol, address, decimals) {
 }
 
 async function loop() {
-    const contract = new ethers.Contract("0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8", constants.ABIS.IERC20_METADATA, provider);
+    /*const contract = new ethers.Contract("0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8", constants.ABIS.IERC20_METADATA, provider);
     const decimals = await contract.decimals();
     await executeFlashLoanArbitrage("aArbWETH", "0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8", decimals);
-    return;
+    return;*/
     while (true) {
         console.log("COLLECTING URLS...");
         const bridges = await getBridges();

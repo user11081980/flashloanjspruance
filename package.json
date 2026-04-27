@@ -19,7 +19,7 @@
     "pm2": "^6.0.14"
   },
   "dependencies": {
-    "@aave/core-v3": "^1.16.2",
+    "@aave/core-v3": "1.19.3",
     "@openzeppelin/contracts": "^4.7.3",
     "dotenv": "^16.0.3",
     "axios": "1.13.5",

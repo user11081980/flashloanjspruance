@@ -25,3 +25,10 @@
 0x43D55F784980C99dC230dcDEC0fE1793897cBFce contract without callback implementation and without call to flashloan // THIS ONE SUCCEEDS. THE PROBLEM IS WHEN CALLING POOL.FLASHLOANSIMPLE
 0x64a50f9C300F912674B56272cb17BD436E7180ff contract with revert inside the callback, at the very top after variable initialization
 0xa4156719db18B95cE6A31D375bF8076A5951c306 contract with revert inside the callback, at the very top before variable initialization
+0x956E5944E6ca3D8491140DFF77aA5a17Ef2e11dC contract with this callback implementation
+// JUST APPROVE AND FINISH
+uint256 amountOwed = amount + premium;
+IERC20(asset).approve(address(POOL), amountOwed);
+return true;
+0x74A46C8d39D2F91084b2738F0dD5aE8f728408E7 contract with this requestFlashLoan implementation // THIS ONE SUCCEEDS.
+POOL.getReserveData(_token);
