@@ -8,7 +8,7 @@ const utilities = require("../utils/utilities");
 const dexScreenerScrapper = require("../utils/dexScreenerScraper");
 require("dotenv").config();
 
-console.log(`${hre.network.name} NETWORK`);
+console.log(`NETWORK ${hre.network.name}`);
 
 const provider = new ethers.providers.JsonRpcProvider(hre.network.config.url);
 const sdk = constructSimpleSDK({ chainId: constants.KEYS.ARBITRUM_ID, axios: axios });
@@ -16,9 +16,9 @@ const excludedSymbols = [];
 
 async function executeFlashLoanArbitrage(symbol, address, decimals) {
     try {
-        console.log(`WETH/${symbol}/WETH`);
+        //console.log(`WETH/${symbol}/WETH`);
 
-        const startingAmountBigNumber = ethers.utils.parseUnits(constants.AMOUNTS.AMOUNT_TO_BORROW, constants.AMOUNTS.NUMBER_OF_DECIMALS);
+        const startingAmountBigNumber = ethers.utils.parseUnits(constants.AMOUNTS.AMOUNT_TO_BORROW_MINUS_PERCENTAGE, constants.AMOUNTS.NUMBER_OF_DECIMALS);
         const rate1 = await sdk.swap.getRate({
             srcToken: constants.ADDRESSES.ARBITRUM.WETH,
             srcDecimals: constants.AMOUNTS.NUMBER_OF_DECIMALS,
@@ -28,6 +28,7 @@ async function executeFlashLoanArbitrage(symbol, address, decimals) {
             userAddress: process.env.METAMASK_ARBITRUM_ADDRESS,
             side: "SELL",
             maxImpact: 100,
+            ignoreBadUsdPrice: true
         });
 
         const rate2 = await sdk.swap.getRate({
@@ -39,14 +40,18 @@ async function executeFlashLoanArbitrage(symbol, address, decimals) {
             userAddress: process.env.METAMASK_ARBITRUM_ADDRESS,
             side: "SELL",
             maxImpact: 100,
+            ignoreBadUsdPrice: true
         });
 
         const endingAmountBigNumber = BigNumber.from(rate2.destAmount);
-        console.log(startingAmountBigNumber.toString());
-        console.log(endingAmountBigNumber.toString());
+        //console.log(startingAmountBigNumber.toString());
+        //console.log(endingAmountBigNumber.toString());
 
         if (endingAmountBigNumber.gt(startingAmountBigNumber)) {
             console.log(`WETH/${symbol}/WETH ARBITRAGE FOUND!`);
+            console.log(getBestRoute(rate1));
+            console.log(getBestRoute(rate2));
+
             //utilities.pushover(`WETH/${symbol}/WETH ARBITRAGE FOUND!`);
             const transaction1 = await sdk.swap.buildTx({
                 srcToken: constants.ADDRESSES.ARBITRUM.WETH,
@@ -104,6 +109,15 @@ async function executeFlashLoanArbitrage(symbol, address, decimals) {
     }
 }
 
+function getBestRoute(rate) {
+    return JSON.stringify(rate.bestRoute.map(route => ({
+        percent: route.percent,
+        swapExchanges: route.swaps.flatMap(swap =>
+            swap.swapExchanges.map(swapExchange => swapExchange.exchange)
+        )
+    })));
+};
+
 async function loop() {
     /*const contract = new ethers.Contract("0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8", constants.ABIS.IERC20_METADATA, provider);
     const decimals = await contract.decimals();
@@ -127,16 +141,13 @@ async function loop() {
 }
 
 async function getBridges() {
-    const bridges = [];
-    for (const url of constants.URLS.ARBITRUM.DEXSCREENER) {
-        try {
-            const temp = (await dexScreenerScrapper.scrapeTrendingPairs(url)).map(x => x.baseToken);
-            bridges.push(...temp);
-        } catch {
-            await utilities.sleep(constants.AMOUNTS.DELAY_BETWEEN_CALLS);
-        }
+    try {
+        const response = await axios.get(process.env.AZURE_BLOB_TOKENS_JSON_SAS_URL);
+        return response.data;
+    } catch (error) {
+        console.error(`ERROR RETRIEVING TOKENS: ${error}`);
+        return [];
     }
-    return bridges;
 };
 
 loop();
