@@ -87,11 +87,11 @@ async function executeFlashLoanArbitrage(symbol, address, decimals) {
         // Retry later
         if (e.code === "ERR_BAD_REQUEST" && e.response.statusText === "Forbidden") {
             console.log("RATE LIMIT REACHED. SLEEPING...");
-            await utilities.sleep(constants.AMOUNTS.DELAY_AFTER_RATE_LIMIT_REACHED);
+            //await utilities.sleep(constants.AMOUNTS.DELAY_AFTER_RATE_LIMIT_REACHED);
         }
         else if (e.code === "ERR_BAD_REQUEST" && e.response.data.error.includes("Rate limit reached")) {
             console.log("RATE LIMIT REACHED. SLEEPING...");
-            await utilities.sleep(constants.AMOUNTS.DELAY_AFTER_RATE_LIMIT_REACHED);
+            //await utilities.sleep(constants.AMOUNTS.DELAY_AFTER_RATE_LIMIT_REACHED);
         }
         else if (e.code === "UNPREDICTABLE_GAS_LIMIT" && e.reason.includes("execution reverted")) {
             console.log(`EXECUTION REVERTED: ${e.reason}`)
